@@ -623,6 +623,10 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'prettierd',
         'prettier',
+        'jdtls',
+        'vscode-spring-boot-tools',
+        'java-test',
+        'java-debug-adapter',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -859,7 +863,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular' }
+      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular', 'java' }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
@@ -881,6 +885,8 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
+  { "mfussenegger/nvim-jdtls" },
+
   {
     "nvim-neo-tree/neo-tree.nvim",
     version = "*",
