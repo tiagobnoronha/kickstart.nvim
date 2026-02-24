@@ -906,6 +906,25 @@ require('lazy').setup({
   -- require 'kickstart.plugins.autopairs',
   { "mfussenegger/nvim-jdtls" },
 
+  { "tpope/vim-fugitive" },
+  { "sindrets/diffview.nvim" },
+  {
+    "kdheepak/lazygit.nvim",
+    cmd = {
+      "LazyGit",
+      "LazyGitConfig",
+      "LazyGitCurrentFile",
+      "LazyGitFilter",
+      "LazyGitFilterCurrentFile",
+    },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
+    }
+  },
+
   {
     "nvim-neo-tree/neo-tree.nvim",
     version = "*",
