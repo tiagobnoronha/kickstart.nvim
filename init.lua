@@ -597,6 +597,8 @@ require('lazy').setup({
         ts_ls = {},
         html = {},
         cssls = {},
+        dockerls = {},
+        docker_compose_language_service = {},
         intelephense = {
           settings = {
             intelephense = {
@@ -628,6 +630,8 @@ require('lazy').setup({
         ts_ls = "typescript-language-server",
         html = "html-lsp",
         cssls = "css-lsp",
+        dockerls = "dockerfile-language-server",
+        docker_compose_language_service = "docker-compose-language-service",
       }
       for i, name in ipairs(ensure_installed) do
         if mason_overrides[name] then
@@ -645,6 +649,7 @@ require('lazy').setup({
         'java-debug-adapter',
         'intelephense',
         'phpcbf',
+        'hadolint',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -882,7 +887,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular', 'java', 'php', 'phpdoc' }
+      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular', 'java', 'php', 'phpdoc', 'dockerfile' }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
@@ -908,6 +913,17 @@ require('lazy').setup({
 
   { "tpope/vim-fugitive" },
   { "sindrets/diffview.nvim" },
+  {
+    "crnvl96/lazydocker.nvim",
+    event = "VeryLazy",
+    opts = {},
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    keys = {
+      { "<leader>ld", "<cmd>lua require('lazydocker').toggle()<CR>", desc = "LazyDocker" },
+    }
+  },
   {
     "kdheepak/lazygit.nvim",
     cmd = {
