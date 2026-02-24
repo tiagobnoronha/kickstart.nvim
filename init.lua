@@ -597,6 +597,22 @@ require('lazy').setup({
         ts_ls = {},
         html = {},
         cssls = {},
+        intelephense = {
+          settings = {
+            intelephense = {
+              stubs = {
+                "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core", "ctype", "curl", "date",
+                "dba", "dom", "enchant", "exif", "FFI", "fileinfo", "filter", "fpm", "ftp", "gd", "gettext",
+                "gmp", "hash", "iconv", "imap", "intl", "json", "ldap", "libxml", "mbstring", "meta", "mysqli",
+                "oci8", "odbc", "openssl", "pcntl", "pcre", "PDO", "pdo_ibm", "pdo_mysql", "pdo_pgsql", "pdo_sqlite", "pgsql",
+                "Phar", "posix", "pspell", "readline", "Reflection", "session", "shmop", "SimpleXML", "snmp", "soap",
+                "sockets", "sodium", "SPL", "sqlite3", "standard", "superglobals", "sysvmsg", "sysvsem", "sysvshm", "tidy",
+                "tokenizer", "xml", "xmlreader", "xmlrpc", "xmlwriter", "xsl", "Zend OPcache", "zip", "zlib",
+                "wordpress", "phpunit",
+              }
+            }
+          }
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -627,6 +643,8 @@ require('lazy').setup({
         'vscode-spring-boot-tools',
         'java-test',
         'java-debug-adapter',
+        'intelephense',
+        'phpcbf',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -702,6 +720,7 @@ require('lazy').setup({
         css = { "prettierd", "prettier", stop_after_first = true },
         scss = { "prettierd", "prettier", stop_after_first = true },
         angular = { "prettierd", "prettier", stop_after_first = true },
+        php = { "phpcbf" },
       },
     },
   },
@@ -863,7 +882,7 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular', 'java' }
+      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular', 'java', 'php', 'phpdoc' }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
