@@ -955,6 +955,7 @@ require('lazy').setup({
     },
     opts = {
       filesystem = {
+        group_empty_dirs = true,
         window = {
           mappings = {
             ["\\"] = "close_window",
