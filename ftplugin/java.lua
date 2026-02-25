@@ -12,7 +12,13 @@ vim.b.jdtls_attached = true
 local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
 local lombok_path = jdtls_path .. "/lombok.jar"
 
-local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
+local root_dir = require("jdtls.setup").find_root(root_markers)
+if root_dir == "" or root_dir == nil then
+  root_dir = vim.fn.getcwd()
+end
+
+local project_name = vim.fn.fnamemodify(root_dir, ":p:t")
 local workspace_dir = vim.fn.stdpath("data") .. "/site/java/workspace-root/" .. project_name
 
 local os_config = "config_mac"
@@ -39,7 +45,7 @@ local config = {
     "-configuration", jdtls_path .. "/" .. os_config,
     "-data", workspace_dir,
   },
-  root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }),
+  root_dir = root_dir,
   settings = {
     java = {
       signatureHelp = { enabled = true },
