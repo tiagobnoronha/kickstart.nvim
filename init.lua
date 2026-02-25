@@ -150,6 +150,10 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.wrap = false
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
 
@@ -603,17 +607,82 @@ require('lazy').setup({
           settings = {
             intelephense = {
               stubs = {
-                "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core", "ctype", "curl", "date",
-                "dba", "dom", "enchant", "exif", "FFI", "fileinfo", "filter", "fpm", "ftp", "gd", "gettext",
-                "gmp", "hash", "iconv", "imap", "intl", "json", "ldap", "libxml", "mbstring", "meta", "mysqli",
-                "oci8", "odbc", "openssl", "pcntl", "pcre", "PDO", "pdo_ibm", "pdo_mysql", "pdo_pgsql", "pdo_sqlite", "pgsql",
-                "Phar", "posix", "pspell", "readline", "Reflection", "session", "shmop", "SimpleXML", "snmp", "soap",
-                "sockets", "sodium", "SPL", "sqlite3", "standard", "superglobals", "sysvmsg", "sysvsem", "sysvshm", "tidy",
-                "tokenizer", "xml", "xmlreader", "xmlrpc", "xmlwriter", "xsl", "Zend OPcache", "zip", "zlib",
-                "wordpress", "phpunit",
-              }
-            }
-          }
+                'apache',
+                'bcmath',
+                'bz2',
+                'calendar',
+                'com_dotnet',
+                'Core',
+                'ctype',
+                'curl',
+                'date',
+                'dba',
+                'dom',
+                'enchant',
+                'exif',
+                'FFI',
+                'fileinfo',
+                'filter',
+                'fpm',
+                'ftp',
+                'gd',
+                'gettext',
+                'gmp',
+                'hash',
+                'iconv',
+                'imap',
+                'intl',
+                'json',
+                'ldap',
+                'libxml',
+                'mbstring',
+                'meta',
+                'mysqli',
+                'oci8',
+                'odbc',
+                'openssl',
+                'pcntl',
+                'pcre',
+                'PDO',
+                'pdo_ibm',
+                'pdo_mysql',
+                'pdo_pgsql',
+                'pdo_sqlite',
+                'pgsql',
+                'Phar',
+                'posix',
+                'pspell',
+                'readline',
+                'Reflection',
+                'session',
+                'shmop',
+                'SimpleXML',
+                'snmp',
+                'soap',
+                'sockets',
+                'sodium',
+                'SPL',
+                'sqlite3',
+                'standard',
+                'superglobals',
+                'sysvmsg',
+                'sysvsem',
+                'sysvshm',
+                'tidy',
+                'tokenizer',
+                'xml',
+                'xmlreader',
+                'xmlrpc',
+                'xmlwriter',
+                'xsl',
+                'Zend OPcache',
+                'zip',
+                'zlib',
+                'wordpress',
+                'phpunit',
+              },
+            },
+          },
         },
       }
 
@@ -626,17 +695,15 @@ require('lazy').setup({
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
       local mason_overrides = {
-        angularls = "angular-language-server",
-        ts_ls = "typescript-language-server",
-        html = "html-lsp",
-        cssls = "css-lsp",
-        dockerls = "dockerfile-language-server",
-        docker_compose_language_service = "docker-compose-language-service",
+        angularls = 'angular-language-server',
+        ts_ls = 'typescript-language-server',
+        html = 'html-lsp',
+        cssls = 'css-lsp',
+        dockerls = 'dockerfile-language-server',
+        docker_compose_language_service = 'docker-compose-language-service',
       }
       for i, name in ipairs(ensure_installed) do
-        if mason_overrides[name] then
-          ensure_installed[i] = mason_overrides[name]
-        end
+        if mason_overrides[name] then ensure_installed[i] = mason_overrides[name] end
       end
       vim.list_extend(ensure_installed, {
         'lua-language-server', -- Lua Language server
@@ -719,13 +786,13 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        typescript = { "prettierd", "prettier", stop_after_first = true },
-        javascript = { "prettierd", "prettier", stop_after_first = true },
-        html = { "prettierd", "prettier", stop_after_first = true },
-        css = { "prettierd", "prettier", stop_after_first = true },
-        scss = { "prettierd", "prettier", stop_after_first = true },
-        angular = { "prettierd", "prettier", stop_after_first = true },
-        php = { "phpcbf" },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        html = { 'prettierd', 'prettier', stop_after_first = true },
+        css = { 'prettierd', 'prettier', stop_after_first = true },
+        scss = { 'prettierd', 'prettier', stop_after_first = true },
+        angular = { 'prettierd', 'prettier', stop_after_first = true },
+        php = { 'phpcbf' },
       },
     },
   },
@@ -887,7 +954,28 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular', 'java', 'php', 'phpdoc', 'dockerfile' }
+      local filetypes = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'typescript',
+        'javascript',
+        'css',
+        'scss',
+        'angular',
+        'java',
+        'php',
+        'phpdoc',
+        'dockerfile',
+      }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
@@ -909,95 +997,91 @@ require('lazy').setup({
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  { "mfussenegger/nvim-jdtls" },
+  { 'mfussenegger/nvim-jdtls' },
 
-  { "tpope/vim-fugitive" },
-  { "sindrets/diffview.nvim" },
+  { 'tpope/vim-fugitive' },
+  { 'sindrets/diffview.nvim' },
   {
-    "crnvl96/lazydocker.nvim",
-    event = "VeryLazy",
+    'crnvl96/lazydocker.nvim',
+    event = 'VeryLazy',
     opts = {},
     dependencies = {
-      "MunifTanjim/nui.nvim",
+      'MunifTanjim/nui.nvim',
     },
     keys = {
-      { "<leader>ld", "<cmd>lua require('lazydocker').toggle()<CR>", desc = "LazyDocker" },
-    }
+      { '<leader>ld', "<cmd>lua require('lazydocker').toggle()<CR>", desc = 'LazyDocker' },
+    },
   },
   {
-    "kdheepak/lazygit.nvim",
+    'kdheepak/lazygit.nvim',
     cmd = {
-      "LazyGit",
-      "LazyGitConfig",
-      "LazyGitCurrentFile",
-      "LazyGitFilter",
-      "LazyGitFilterCurrentFile",
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
     },
     dependencies = {
-      "nvim-lua/plenary.nvim",
+      'nvim-lua/plenary.nvim',
     },
     keys = {
-      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" }
-    }
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
+    },
   },
 
   {
-    "ellisonleao/dotenv.nvim",
+    'ellisonleao/dotenv.nvim',
     config = function()
-      require("dotenv").setup()
-      local global_env = vim.fn.stdpath("config") .. "/.env"
-      if vim.fn.filereadable(global_env) == 1 then
-        vim.cmd("Dotenv " .. global_env)
-      end
-    end
+      require('dotenv').setup()
+      local global_env = vim.fn.stdpath 'config' .. '/.env'
+      if vim.fn.filereadable(global_env) == 1 then vim.cmd('Dotenv ' .. global_env) end
+    end,
   },
 
   {
-    "harrisoncramer/gitlab.nvim",
+    'harrisoncramer/gitlab.nvim',
     dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "sindrets/diffview.nvim",
-      "stevearc/dressing.nvim", 
-      "nvim-tree/nvim-web-devicons"
+      'MunifTanjim/nui.nvim',
+      'nvim-lua/plenary.nvim',
+      'sindrets/diffview.nvim',
+      'stevearc/dressing.nvim',
+      'nvim-tree/nvim-web-devicons',
     },
     enabled = true,
-    build = function () require("gitlab.server").build(true) end, 
-    config = function()
-      require("gitlab").setup()
-    end,
+    build = function() require('gitlab.server').build(true) end,
+    config = function() require('gitlab').setup() end,
     keys = {
-      { "<leader>gls", "<cmd>lua require('gitlab').summary()<CR>", desc = "GitLab Summary" },
-      { "<leader>glr", "<cmd>lua require('gitlab').review()<CR>", desc = "GitLab Review" },
-      { "<leader>glA", "<cmd>lua require('gitlab').approve()<CR>", desc = "GitLab Approve" },
-      { "<leader>glR", "<cmd>lua require('gitlab').revoke()<CR>", desc = "GitLab Revoke Approval" },
-      { "<leader>glc", "<cmd>lua require('gitlab').create_comment()<CR>", desc = "GitLab Create Comment" },
-      { "<leader>glp", "<cmd>lua require('gitlab').pipeline()<CR>", desc = "GitLab Pipeline" },
-      { "<leader>gld", "<cmd>lua require('gitlab').toggle_discussions()<CR>", desc = "GitLab Discussions" },
-    }
+      { '<leader>gls', "<cmd>lua require('gitlab').summary()<CR>", desc = 'GitLab Summary' },
+      { '<leader>glr', "<cmd>lua require('gitlab').review()<CR>", desc = 'GitLab Review' },
+      { '<leader>glA', "<cmd>lua require('gitlab').approve()<CR>", desc = 'GitLab Approve' },
+      { '<leader>glR', "<cmd>lua require('gitlab').revoke()<CR>", desc = 'GitLab Revoke Approval' },
+      { '<leader>glc', "<cmd>lua require('gitlab').create_comment()<CR>", desc = 'GitLab Create Comment' },
+      { '<leader>glp', "<cmd>lua require('gitlab').pipeline()<CR>", desc = 'GitLab Pipeline' },
+      { '<leader>gld', "<cmd>lua require('gitlab').toggle_discussions()<CR>", desc = 'GitLab Discussions' },
+    },
   },
 
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    version = "*",
+    'nvim-neo-tree/neo-tree.nvim',
+    version = '*',
     lazy = false,
     dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "MunifTanjim/nui.nvim",
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons',
+      'MunifTanjim/nui.nvim',
     },
     keys = {
-      { "\\", ":Neotree reveal<CR>", desc = "NeoTree reveal", silent = true },
+      { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
     },
     opts = {
       filesystem = {
         group_empty_dirs = true,
         window = {
           mappings = {
-            ["\\"] = "close_window",
+            ['\\'] = 'close_window',
           },
         },
-        hijack_netrw_behavior = "open_default",
+        hijack_netrw_behavior = 'open_default',
       },
     },
   },
