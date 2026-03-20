@@ -1147,6 +1147,7 @@ require('lazy').setup({
     branch = 'main',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
     config = function()
+      -- ensure basic parser are installed
       local parsers = {
         'bash',
         'c',
