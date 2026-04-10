@@ -664,9 +664,30 @@ require('lazy').setup({
       --  See `:help lsp-config` for information about keys and how to configure
       ---@type table<string, vim.lsp.Config>
       local servers = {
-        angularls = {},
+        angularls = {
+          filetypes = { 'typescript', 'html', 'typescriptreact' },
+          on_new_config = function(new_config, new_root_dir)
+            local probe = new_root_dir .. '/node_modules'
+            new_config.cmd = {
+              'ngserver',
+              '--stdio',
+              '--tsProbeLocations', probe,
+              '--ngProbeLocations', probe,
+            }
+          end,
+        },
         ts_ls = {},
-        html = {},
+        html = {
+          -- Disable html LSP on Angular templates (angularls handles them)
+          on_attach = function(client, bufnr)
+            if vim.bo[bufnr].filetype == 'html' then
+              local filename = vim.api.nvim_buf_get_name(bufnr)
+              if filename:match('%.component%.html$') then
+                client.stop()
+              end
+            end
+          end,
+        },
         cssls = {},
         dockerls = {},
         docker_compose_language_service = {},
