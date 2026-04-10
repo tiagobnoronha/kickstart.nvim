@@ -871,6 +871,7 @@ require('lazy').setup({
             },
           },
         },
+        stylua = {}, -- Used to format Lua code
         -- Special Lua Config, as recommended by neovim help docs
         lua_ls = {
           on_init = function(client)
@@ -1002,7 +1003,9 @@ require('lazy').setup({
           --    https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
-            config = function() require('luasnip.loaders.from_vscode').lazy_load() end,
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
           },
         },
         opts = {},
