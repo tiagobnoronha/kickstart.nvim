@@ -517,6 +517,9 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       { 'j-hui/fidget.nvim', opts = {} },
+
+      -- Allows extra capabilities provided by blink.cmp
+      'saghen/blink.cmp',
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -661,7 +664,6 @@ require('lazy').setup({
             },
           },
         },
-        stylua = {}, -- Used to format Lua code
         -- Special Lua Config, as recommended by neovim help docs
         lua_ls = {
           on_init = function(client)
@@ -712,6 +714,8 @@ require('lazy').setup({
         if mason_overrides[name] then ensure_installed[i] = mason_overrides[name] end
       end
       vim.list_extend(ensure_installed, {
+        'stylua',
+        'lua-language-server',
         'prettierd',
         'prettier',
         'jdtls',
@@ -723,6 +727,11 @@ require('lazy').setup({
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      -- Register blink.cmp capabilities globally so all LSPs receive them
+      vim.lsp.config('*', {
+        capabilities = require('blink.cmp').get_lsp_capabilities(),
+      })
 
       for name, server in pairs(servers) do
         vim.lsp.config(name, server)
