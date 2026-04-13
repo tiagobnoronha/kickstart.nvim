@@ -1159,6 +1159,7 @@ require('lazy').setup({
     opts = {
       filesystem = {
         group_empty_dirs = true,
+        use_libuv_file_watcher = true,
         window = {
           mappings = {
             ['\\'] = 'close_window',
