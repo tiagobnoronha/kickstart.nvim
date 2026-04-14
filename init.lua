@@ -754,9 +754,18 @@ require('lazy').setup({
       ---@type table<string, vim.lsp.Config>
       local servers = {
         angularls = {
-          -- lspconfig's built-in angularls config already handles cmd, root_markers and htmlangular.
-          -- We only keep filetypes explicit to ensure htmlangular is always included.
-          filetypes = { 'typescript', 'html', 'htmlangular', 'typescriptreact' },
+          filetypes = { 'typescript', 'html', 'typescriptreact' },
+          on_new_config = function(new_config, new_root_dir)
+            local probe = new_root_dir .. '/node_modules'
+            new_config.cmd = {
+              'ngserver',
+              '--stdio',
+              '--tsProbeLocations',
+              probe,
+              '--ngProbeLocations',
+              probe,
+            }
+          end,
         },
         ts_ls = {},
         html = {
@@ -1003,9 +1012,7 @@ require('lazy').setup({
           --    https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
+            config = function() require('luasnip.loaders.from_vscode').lazy_load() end,
           },
         },
         opts = {},
