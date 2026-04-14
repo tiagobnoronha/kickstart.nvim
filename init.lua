@@ -237,6 +237,13 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- Detect Angular template files as 'htmlangular' so angularls activates full template intelligence
+vim.filetype.add {
+  pattern = {
+    ['.*%.component%.html'] = 'htmlangular',
+  },
+}
+
 -- [[ Angular Component Navigation ]]
 local angular_extensions = {
   { ext = '.component.ts', label = '[C]omponent TS' },
@@ -667,7 +674,10 @@ require('lazy').setup({
       ---@type table<string, vim.lsp.Config>
       local servers = {
         angularls = {
-          filetypes = { 'typescript', 'html', 'typescriptreact' },
+          filetypes = { 'typescript', 'html', 'htmlangular', 'typescriptreact' },
+          root_dir = function(fname)
+            return vim.fs.root(fname, { 'angular.json', 'nx.json', 'package.json' })
+          end,
           on_new_config = function(new_config, new_root_dir)
             local probe = new_root_dir .. '/node_modules'
             new_config.cmd = {
@@ -684,9 +694,9 @@ require('lazy').setup({
         html = {
           -- Disable html LSP on Angular templates (angularls handles them)
           on_attach = function(client, bufnr)
-            if vim.bo[bufnr].filetype == 'html' then
-              local filename = vim.api.nvim_buf_get_name(bufnr)
-              if filename:match '%.component%.html$' then client.stop() end
+            local ft = vim.bo[bufnr].filetype
+            if ft == 'htmlangular' or (ft == 'html' and vim.api.nvim_buf_get_name(bufnr):match '%.component%.html$') then
+              client.stop()
             end
           end,
         },
@@ -885,20 +895,7 @@ require('lazy').setup({
     ---@type conform.setupOpts
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
+      format_on_save = false,
       formatters_by_ft = {
         lua = { 'stylua' },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
