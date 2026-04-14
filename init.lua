@@ -102,7 +102,7 @@ vim.g.have_nerd_font = true
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -110,12 +110,14 @@ vim.o.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
+vim.o.tabstop = 4
+
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.schedule(function()
-  if vim.fn.has('wsl') == 1 then
+  if vim.fn.has 'wsl' == 1 then
     -- WSL: bridge clipboard to Windows via clip.exe / PowerShell
     vim.g.clipboard = {
       name = 'WslClipboard',
@@ -237,9 +239,9 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- [[ Angular Component Navigation ]]
 local angular_extensions = {
-  { ext = '.component.ts',      label = '[C]omponent TS' },
-  { ext = '.component.html',    label = '[T]emplate HTML' },
-  { ext = '.component.scss',    label = '[S]tylesheet SCSS' },
+  { ext = '.component.ts', label = '[C]omponent TS' },
+  { ext = '.component.html', label = '[T]emplate HTML' },
+  { ext = '.component.scss', label = '[S]tylesheet SCSS' },
   { ext = '.component.spec.ts', label = '[S]pec TS' },
 }
 
@@ -272,11 +274,11 @@ local function angular_cycle()
   vim.notify('Not an Angular component file', vim.log.levels.WARN)
 end
 
-vim.keymap.set('n', '<leader>aa', angular_cycle,                                           { desc = '[A]ngular cycle files' })
-vim.keymap.set('n', '<leader>ac', function() angular_goto('.component.ts') end,      { desc = '[A]ngular [C]omponent TS' })
-vim.keymap.set('n', '<leader>at', function() angular_goto('.component.html') end,    { desc = '[A]ngular [T]emplate HTML' })
-vim.keymap.set('n', '<leader>as', function() angular_goto('.component.scss') end,    { desc = '[A]ngular [S]tylesheet SCSS' })
-vim.keymap.set('n', '<leader>aS', function() angular_goto('.component.spec.ts') end, { desc = '[A]ngular [S]pec TS' })
+vim.keymap.set('n', '<leader>aa', angular_cycle, { desc = '[A]ngular cycle files' })
+vim.keymap.set('n', '<leader>ac', function() angular_goto '.component.ts' end, { desc = '[A]ngular [C]omponent TS' })
+vim.keymap.set('n', '<leader>at', function() angular_goto '.component.html' end, { desc = '[A]ngular [T]emplate HTML' })
+vim.keymap.set('n', '<leader>as', function() angular_goto '.component.scss' end, { desc = '[A]ngular [S]tylesheet SCSS' })
+vim.keymap.set('n', '<leader>aS', function() angular_goto '.component.spec.ts' end, { desc = '[A]ngular [S]pec TS' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -671,8 +673,10 @@ require('lazy').setup({
             new_config.cmd = {
               'ngserver',
               '--stdio',
-              '--tsProbeLocations', probe,
-              '--ngProbeLocations', probe,
+              '--tsProbeLocations',
+              probe,
+              '--ngProbeLocations',
+              probe,
             }
           end,
         },
@@ -682,9 +686,7 @@ require('lazy').setup({
           on_attach = function(client, bufnr)
             if vim.bo[bufnr].filetype == 'html' then
               local filename = vim.api.nvim_buf_get_name(bufnr)
-              if filename:match('%.component%.html$') then
-                client.stop()
-              end
+              if filename:match '%.component%.html$' then client.stop() end
             end
           end,
         },
@@ -714,17 +716,79 @@ require('lazy').setup({
           settings = {
             intelephense = {
               stubs = {
-                'apache', 'bcmath', 'bz2', 'calendar', 'com_dotnet', 'Core', 'ctype',
-                'curl', 'date', 'dba', 'dom', 'enchant', 'exif', 'FFI', 'fileinfo',
-                'filter', 'fpm', 'ftp', 'gd', 'gettext', 'gmp', 'hash', 'iconv',
-                'imap', 'intl', 'json', 'ldap', 'libxml', 'mbstring', 'meta', 'mysqli',
-                'oci8', 'odbc', 'openssl', 'pcntl', 'pcre', 'PDO', 'pdo_ibm',
-                'pdo_mysql', 'pdo_pgsql', 'pdo_sqlite', 'pgsql', 'Phar', 'posix',
-                'pspell', 'readline', 'Reflection', 'session', 'shmop', 'SimpleXML',
-                'snmp', 'soap', 'sockets', 'sodium', 'SPL', 'sqlite3', 'standard',
-                'superglobals', 'sysvmsg', 'sysvsem', 'sysvshm', 'tidy', 'tokenizer',
-                'xml', 'xmlreader', 'xmlrpc', 'xmlwriter', 'xsl', 'Zend OPcache',
-                'zip', 'zlib', 'wordpress', 'phpunit',
+                'apache',
+                'bcmath',
+                'bz2',
+                'calendar',
+                'com_dotnet',
+                'Core',
+                'ctype',
+                'curl',
+                'date',
+                'dba',
+                'dom',
+                'enchant',
+                'exif',
+                'FFI',
+                'fileinfo',
+                'filter',
+                'fpm',
+                'ftp',
+                'gd',
+                'gettext',
+                'gmp',
+                'hash',
+                'iconv',
+                'imap',
+                'intl',
+                'json',
+                'ldap',
+                'libxml',
+                'mbstring',
+                'meta',
+                'mysqli',
+                'oci8',
+                'odbc',
+                'openssl',
+                'pcntl',
+                'pcre',
+                'PDO',
+                'pdo_ibm',
+                'pdo_mysql',
+                'pdo_pgsql',
+                'pdo_sqlite',
+                'pgsql',
+                'Phar',
+                'posix',
+                'pspell',
+                'readline',
+                'Reflection',
+                'session',
+                'shmop',
+                'SimpleXML',
+                'snmp',
+                'soap',
+                'sockets',
+                'sodium',
+                'SPL',
+                'sqlite3',
+                'standard',
+                'superglobals',
+                'sysvmsg',
+                'sysvsem',
+                'sysvshm',
+                'tidy',
+                'tokenizer',
+                'xml',
+                'xmlreader',
+                'xmlrpc',
+                'xmlwriter',
+                'xsl',
+                'Zend OPcache',
+                'zip',
+                'zlib',
+                'wordpress',
+                'phpunit',
               },
             },
           },
@@ -873,9 +937,7 @@ require('lazy').setup({
           --    https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
+            config = function() require('luasnip.loaders.from_vscode').lazy_load() end,
           },
         },
         opts = {},
@@ -1021,9 +1083,29 @@ require('lazy').setup({
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
     config = function()
       local parsers = {
-        'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline',
-        'query', 'vim', 'vimdoc', 'typescript', 'javascript', 'css', 'scss', 'angular',
-        'java', 'php', 'phpdoc', 'dockerfile', 'xml', 'json', 'yaml',
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'typescript',
+        'javascript',
+        'css',
+        'scss',
+        'angular',
+        'java',
+        'php',
+        'phpdoc',
+        'dockerfile',
+        'xml',
+        'json',
+        'yaml',
       }
       require('nvim-treesitter').install(parsers)
 
