@@ -674,21 +674,9 @@ require('lazy').setup({
       ---@type table<string, vim.lsp.Config>
       local servers = {
         angularls = {
+          -- lspconfig's built-in angularls config already handles cmd, root_markers and htmlangular.
+          -- We only keep filetypes explicit to ensure htmlangular is always included.
           filetypes = { 'typescript', 'html', 'htmlangular', 'typescriptreact' },
-          root_dir = function(fname)
-            return vim.fs.root(fname, { 'angular.json', 'nx.json', 'package.json' })
-          end,
-          on_new_config = function(new_config, new_root_dir)
-            local probe = new_root_dir .. '/node_modules'
-            new_config.cmd = {
-              'ngserver',
-              '--stdio',
-              '--tsProbeLocations',
-              probe,
-              '--ngProbeLocations',
-              probe,
-            }
-          end,
         },
         ts_ls = {},
         html = {
