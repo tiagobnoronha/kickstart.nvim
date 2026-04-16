@@ -298,18 +298,34 @@ local function java_infer_package(dir)
   return ''
 end
 
+local function java_get_target_dir()
+  if vim.bo.filetype == 'neo-tree' then
+    local ok, manager = pcall(require, 'neo-tree.sources.manager')
+    if ok then
+      local state = manager.get_state_for_window()
+      if state and state.tree then
+        local node = state.tree:get_node()
+        if node then
+          local path = node:get_id()
+          return node.type == 'directory' and path or vim.fn.fnamemodify(path, ':h')
+        end
+      end
+    end
+    return vim.fn.getcwd()
+  end
+  local bufname = vim.api.nvim_buf_get_name(0)
+  if bufname ~= '' then
+    local candidate = vim.fn.fnamemodify(bufname, ':p:h')
+    return vim.uv.fs_stat(candidate) and candidate or vim.fn.getcwd()
+  end
+  return vim.fn.getcwd()
+end
+
 local function java_create_file(kind)
   vim.ui.input({ prompt = 'Java ' .. kind .. ' name: ' }, function(name)
     if not name or name == '' then return end
 
-    local bufname = vim.api.nvim_buf_get_name(0)
-    local dir
-    if bufname ~= '' then
-      local candidate = vim.fn.fnamemodify(bufname, ':p:h')
-      dir = vim.uv.fs_stat(candidate) and candidate or vim.fn.getcwd()
-    else
-      dir = vim.fn.getcwd()
-    end
+    local dir = java_get_target_dir()
 
     local filepath = dir .. '/' .. name .. '.java'
     if vim.uv.fs_stat(filepath) then
