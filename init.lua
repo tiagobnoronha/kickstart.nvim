@@ -287,6 +287,69 @@ vim.keymap.set('n', '<leader>at', function() angular_goto '.component.html' end,
 vim.keymap.set('n', '<leader>as', function() angular_goto '.component.scss' end, { desc = '[A]ngular [S]tylesheet SCSS' })
 vim.keymap.set('n', '<leader>aS', function() angular_goto '.component.spec.ts' end, { desc = '[A]ngular [S]pec TS' })
 
+-- [[ Java File Creation ]]
+local function java_infer_package(dir)
+  for _, pat in ipairs({ 'src/main/java/', 'src/test/java/' }) do
+    local _, finish = dir:find(pat, 1, true)
+    if finish then
+      return dir:sub(finish + 1):gsub('/', '.'):gsub('%.$', '')
+    end
+  end
+  return ''
+end
+
+local function java_create_file(kind)
+  vim.ui.input({ prompt = 'Java ' .. kind .. ' name: ' }, function(name)
+    if not name or name == '' then return end
+
+    local bufname = vim.api.nvim_buf_get_name(0)
+    local dir
+    if bufname ~= '' then
+      local candidate = vim.fn.fnamemodify(bufname, ':p:h')
+      dir = vim.uv.fs_stat(candidate) and candidate or vim.fn.getcwd()
+    else
+      dir = vim.fn.getcwd()
+    end
+
+    local filepath = dir .. '/' .. name .. '.java'
+    if vim.uv.fs_stat(filepath) then
+      vim.notify('File already exists: ' .. filepath, vim.log.levels.ERROR)
+      return
+    end
+
+    local pkg = java_infer_package(dir)
+    local lines = {}
+    if pkg ~= '' then
+      lines[#lines + 1] = 'package ' .. pkg .. ';'
+      lines[#lines + 1] = ''
+    end
+    if kind == 'class' then
+      lines[#lines + 1] = 'public class ' .. name .. ' {'
+    elseif kind == 'interface' then
+      lines[#lines + 1] = 'public interface ' .. name .. ' {'
+    elseif kind == 'record' then
+      lines[#lines + 1] = 'public record ' .. name .. '() {'
+    end
+    lines[#lines + 1] = '}'
+    lines[#lines + 1] = ''
+
+    local ok, err = pcall(vim.fn.writefile, lines, filepath)
+    if not ok then
+      vim.notify('Failed to create file: ' .. tostring(err), vim.log.levels.ERROR)
+      return
+    end
+
+    vim.cmd('edit ' .. vim.fn.fnameescape(filepath))
+    -- Cursor fica no `}` — pressionar `O` entra direto no corpo da definição
+    local body_line = (pkg ~= '') and 4 or 2
+    vim.api.nvim_win_set_cursor(0, { body_line, 0 })
+  end)
+end
+
+vim.keymap.set('n', '<leader>jnc', function() java_create_file 'class'     end, { desc = 'Java: [N]ew [C]lass' })
+vim.keymap.set('n', '<leader>jni', function() java_create_file 'interface' end, { desc = 'Java: [N]ew [I]nterface' })
+vim.keymap.set('n', '<leader>jnr', function() java_create_file 'record'    end, { desc = 'Java: [N]ew [R]ecord' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -389,7 +452,8 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
-        { 'gr', group = 'LSP Actions', mode = { 'n' } },
+        { 'gr',         group = 'LSP Actions',     mode = { 'n' } },
+        { '<leader>jn', group = 'Java [N]ew file' },
       },
     },
   },
