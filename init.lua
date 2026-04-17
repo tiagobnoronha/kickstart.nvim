@@ -237,135 +237,6 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
--- Detect Angular template files as 'htmlangular' so angularls activates full template intelligence
-vim.filetype.add {
-  pattern = {
-    ['.*%.component%.html'] = 'htmlangular',
-  },
-}
-
--- [[ Angular Component Navigation ]]
-local angular_extensions = {
-  { ext = '.component.ts', label = '[C]omponent TS' },
-  { ext = '.component.html', label = '[T]emplate HTML' },
-  { ext = '.component.scss', label = '[S]tylesheet SCSS' },
-  { ext = '.component.spec.ts', label = '[S]pec TS' },
-}
-
-local function angular_goto(target_ext)
-  local current = vim.api.nvim_buf_get_name(0)
-  local base = current
-  for _, entry in ipairs(angular_extensions) do
-    if vim.endswith(current, entry.ext) then
-      base = current:sub(1, #current - #entry.ext)
-      break
-    end
-  end
-  local target = base .. target_ext
-  if vim.uv.fs_stat(target) then
-    vim.cmd('edit ' .. vim.fn.fnameescape(target))
-  else
-    vim.notify('File not found: ' .. target, vim.log.levels.WARN)
-  end
-end
-
-local function angular_cycle()
-  local current = vim.api.nvim_buf_get_name(0)
-  for i, entry in ipairs(angular_extensions) do
-    if vim.endswith(current, entry.ext) then
-      local next = angular_extensions[(i % #angular_extensions) + 1]
-      angular_goto(next.ext)
-      return
-    end
-  end
-  vim.notify('Not an Angular component file', vim.log.levels.WARN)
-end
-
-vim.keymap.set('n', '<leader>aa', angular_cycle, { desc = '[A]ngular cycle files' })
-vim.keymap.set('n', '<leader>ac', function() angular_goto '.component.ts' end, { desc = '[A]ngular [C]omponent TS' })
-vim.keymap.set('n', '<leader>at', function() angular_goto '.component.html' end, { desc = '[A]ngular [T]emplate HTML' })
-vim.keymap.set('n', '<leader>as', function() angular_goto '.component.scss' end, { desc = '[A]ngular [S]tylesheet SCSS' })
-vim.keymap.set('n', '<leader>aS', function() angular_goto '.component.spec.ts' end, { desc = '[A]ngular [S]pec TS' })
-
--- [[ Java File Creation ]]
-local function java_infer_package(dir)
-  for _, pat in ipairs({ 'src/main/java/', 'src/test/java/' }) do
-    local _, finish = dir:find(pat, 1, true)
-    if finish then
-      return dir:sub(finish + 1):gsub('/', '.'):gsub('%.$', '')
-    end
-  end
-  return ''
-end
-
-local function java_get_target_dir()
-  if vim.bo.filetype == 'neo-tree' then
-    local ok, manager = pcall(require, 'neo-tree.sources.manager')
-    if ok then
-      local state = manager.get_state_for_window()
-      if state and state.tree then
-        local node = state.tree:get_node()
-        if node then
-          local path = node:get_id()
-          return node.type == 'directory' and path or vim.fn.fnamemodify(path, ':h')
-        end
-      end
-    end
-    return vim.fn.getcwd()
-  end
-  local bufname = vim.api.nvim_buf_get_name(0)
-  if bufname ~= '' then
-    local candidate = vim.fn.fnamemodify(bufname, ':p:h')
-    return vim.uv.fs_stat(candidate) and candidate or vim.fn.getcwd()
-  end
-  return vim.fn.getcwd()
-end
-
-local function java_create_file(kind)
-  vim.ui.input({ prompt = 'Java ' .. kind .. ' name: ' }, function(name)
-    if not name or name == '' then return end
-
-    local dir = java_get_target_dir()
-
-    local filepath = dir .. '/' .. name .. '.java'
-    if vim.uv.fs_stat(filepath) then
-      vim.notify('File already exists: ' .. filepath, vim.log.levels.ERROR)
-      return
-    end
-
-    local pkg = java_infer_package(dir)
-    local lines = {}
-    if pkg ~= '' then
-      lines[#lines + 1] = 'package ' .. pkg .. ';'
-      lines[#lines + 1] = ''
-    end
-    if kind == 'class' then
-      lines[#lines + 1] = 'public class ' .. name .. ' {'
-    elseif kind == 'interface' then
-      lines[#lines + 1] = 'public interface ' .. name .. ' {'
-    elseif kind == 'record' then
-      lines[#lines + 1] = 'public record ' .. name .. '() {'
-    end
-    lines[#lines + 1] = '}'
-    lines[#lines + 1] = ''
-
-    local ok, err = pcall(vim.fn.writefile, lines, filepath)
-    if not ok then
-      vim.notify('Failed to create file: ' .. tostring(err), vim.log.levels.ERROR)
-      return
-    end
-
-    vim.cmd('edit ' .. vim.fn.fnameescape(filepath))
-    -- Cursor fica no `}` — pressionar `O` entra direto no corpo da definição
-    local body_line = (pkg ~= '') and 4 or 2
-    vim.api.nvim_win_set_cursor(0, { body_line, 0 })
-  end)
-end
-
-vim.keymap.set('n', '<leader>jnc', function() java_create_file 'class'     end, { desc = 'Java: [N]ew [C]lass' })
-vim.keymap.set('n', '<leader>jni', function() java_create_file 'interface' end, { desc = 'Java: [N]ew [I]nterface' })
-vim.keymap.set('n', '<leader>jnr', function() java_create_file 'record'    end, { desc = 'Java: [N]ew [R]ecord' })
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -464,12 +335,10 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>a', group = '[A]ngular' },
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
-        { 'gr',         group = 'LSP Actions',     mode = { 'n' } },
-        { '<leader>jn', group = 'Java [N]ew file' },
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { 'gr',        group = 'LSP Actions', mode = { 'n' } },
       },
     },
   },
@@ -753,134 +622,19 @@ require('lazy').setup({
       --  See `:help lsp-config` for information about keys and how to configure
       ---@type table<string, vim.lsp.Config>
       local servers = {
-        angularls = {
-          filetypes = { 'typescript', 'html', 'typescriptreact' },
-          on_new_config = function(new_config, new_root_dir)
-            local probe = new_root_dir .. '/node_modules'
-            new_config.cmd = {
-              'ngserver',
-              '--stdio',
-              '--tsProbeLocations',
-              probe,
-              '--ngProbeLocations',
-              probe,
-            }
-          end,
-        },
-        ts_ls = {},
-        html = {
-          -- Disable html LSP on Angular templates (angularls handles them)
-          on_attach = function(client, bufnr)
-            local ft = vim.bo[bufnr].filetype
-            if ft == 'htmlangular' or (ft == 'html' and vim.api.nvim_buf_get_name(bufnr):match '%.component%.html$') then
-              client.stop()
-            end
-          end,
-        },
-        cssls = {},
-        dockerls = {},
-        docker_compose_language_service = {},
-        jsonls = {},
-        yamlls = {
-          settings = {
-            yaml = {
-              keyOrdering = false,
-              schemas = {
-                ['https://json.schemastore.org/spring-boot-application.json'] = {
-                  'application.yml',
-                  'application.yaml',
-                  'application-*.yml',
-                  'application-*.yaml',
-                },
-              },
-            },
-          },
-        },
-        emmet_ls = {
-          filetypes = { 'html', 'css', 'scss', 'php', 'typescriptreact', 'javascriptreact' },
-        },
-        intelephense = {
-          settings = {
-            intelephense = {
-              stubs = {
-                'apache',
-                'bcmath',
-                'bz2',
-                'calendar',
-                'com_dotnet',
-                'Core',
-                'ctype',
-                'curl',
-                'date',
-                'dba',
-                'dom',
-                'enchant',
-                'exif',
-                'FFI',
-                'fileinfo',
-                'filter',
-                'fpm',
-                'ftp',
-                'gd',
-                'gettext',
-                'gmp',
-                'hash',
-                'iconv',
-                'imap',
-                'intl',
-                'json',
-                'ldap',
-                'libxml',
-                'mbstring',
-                'meta',
-                'mysqli',
-                'oci8',
-                'odbc',
-                'openssl',
-                'pcntl',
-                'pcre',
-                'PDO',
-                'pdo_ibm',
-                'pdo_mysql',
-                'pdo_pgsql',
-                'pdo_sqlite',
-                'pgsql',
-                'Phar',
-                'posix',
-                'pspell',
-                'readline',
-                'Reflection',
-                'session',
-                'shmop',
-                'SimpleXML',
-                'snmp',
-                'soap',
-                'sockets',
-                'sodium',
-                'SPL',
-                'sqlite3',
-                'standard',
-                'superglobals',
-                'sysvmsg',
-                'sysvsem',
-                'sysvshm',
-                'tidy',
-                'tokenizer',
-                'xml',
-                'xmlreader',
-                'xmlrpc',
-                'xmlwriter',
-                'xsl',
-                'Zend OPcache',
-                'zip',
-                'zlib',
-                'wordpress',
-                'phpunit',
-              },
-            },
-          },
-        },
+        -- clangd = {},
+        -- gopls = {},
+        -- pyright = {},
+        -- rust_analyzer = {},
+        --
+        -- Some languages (like typescript) have entire language plugins that can be useful:
+        --    https://github.com/pmizio/typescript-tools.nvim
+        --
+        -- But for many setups, the LSP (`ts_ls`) will work just fine
+        -- ts_ls = {},
+
         stylua = {}, -- Used to format Lua code
+
         -- Special Lua Config, as recommended by neovim help docs
         lua_ls = {
           on_init = function(client)
@@ -916,31 +670,8 @@ require('lazy').setup({
       --
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
-      local mason_overrides = {
-        angularls = 'angular-language-server',
-        ts_ls = 'typescript-language-server',
-        html = 'html-lsp',
-        cssls = 'css-lsp',
-        dockerls = 'dockerfile-language-server',
-        docker_compose_language_service = 'docker-compose-language-service',
-        jsonls = 'json-lsp',
-        yamlls = 'yaml-language-server',
-        emmet_ls = 'emmet-ls',
-      }
-      for i, name in ipairs(ensure_installed) do
-        if mason_overrides[name] then ensure_installed[i] = mason_overrides[name] end
-      end
       vim.list_extend(ensure_installed, {
         'stylua',
-        'lua-language-server',
-        'prettierd',
-        'prettier',
-        'jdtls',
-        'vscode-spring-boot-tools',
-        'java-test',
-        'java-debug-adapter',
-        'phpcbf',
-        'hadolint',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -973,19 +704,27 @@ require('lazy').setup({
     ---@type conform.setupOpts
     opts = {
       notify_on_error = false,
-      format_on_save = false,
+      format_on_save = function(bufnr)
+        -- Disable "format_on_save lsp_fallback" for languages that don't
+        -- have a well standardized coding style. You can add additional
+        -- languages here or re-enable it for the disabled ones.
+        local disable_filetypes = { c = true, cpp = true }
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          return nil
+        else
+          return {
+            timeout_ms = 500,
+            lsp_format = 'fallback',
+          }
+        end
+      end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        html = { 'prettierd', 'prettier', stop_after_first = true },
-        css = { 'prettierd', 'prettier', stop_after_first = true },
-        scss = { 'prettierd', 'prettier', stop_after_first = true },
-        angular = { 'prettierd', 'prettier', stop_after_first = true },
-        php = { 'phpcbf' },
-        json = { 'prettierd', 'prettier', stop_after_first = true },
-        jsonc = { 'prettierd', 'prettier', stop_after_first = true },
-        yaml = { 'prettierd', 'prettier', stop_after_first = true },
+        -- Conform can also run multiple formatters sequentially
+        -- python = { "isort", "black" },
+        --
+        -- You can use 'stop_after_first' to run the first available formatter from the list
+        -- javascript = { "prettierd", "prettier", stop_after_first = true },
       },
     },
   },
@@ -1246,93 +985,11 @@ require('lazy').setup({
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommended keymaps
 
-  { 'mfussenegger/nvim-jdtls' },
-
-  { 'tpope/vim-fugitive' },
-  { 'sindrets/diffview.nvim' },
-
-  {
-    'crnvl96/lazydocker.nvim',
-    event = 'VeryLazy',
-    opts = {},
-    dependencies = { 'MunifTanjim/nui.nvim' },
-    keys = {
-      { '<leader>ld', "<cmd>lua require('lazydocker').toggle()<CR>", desc = 'LazyDocker' },
-    },
-  },
-
-  {
-    'kdheepak/lazygit.nvim',
-    cmd = { 'LazyGit', 'LazyGitConfig', 'LazyGitCurrentFile', 'LazyGitFilter', 'LazyGitFilterCurrentFile' },
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    keys = {
-      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
-    },
-  },
-
-  {
-    'ellisonleao/dotenv.nvim',
-    config = function()
-      require('dotenv').setup()
-      local global_env = vim.fn.stdpath 'config' .. '/.env'
-      if vim.fn.filereadable(global_env) == 1 then vim.cmd('Dotenv ' .. global_env) end
-    end,
-  },
-
-  {
-    'harrisoncramer/gitlab.nvim',
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'nvim-lua/plenary.nvim',
-      'sindrets/diffview.nvim',
-      'stevearc/dressing.nvim',
-      'nvim-tree/nvim-web-devicons',
-    },
-    enabled = true,
-    build = function() require('gitlab.server').build(true) end,
-    config = function() require('gitlab').setup() end,
-    keys = {
-      { '<leader>gls', "<cmd>lua require('gitlab').summary()<CR>", desc = 'GitLab Summary' },
-      { '<leader>glr', "<cmd>lua require('gitlab').review()<CR>", desc = 'GitLab Review' },
-      { '<leader>glA', "<cmd>lua require('gitlab').approve()<CR>", desc = 'GitLab Approve' },
-      { '<leader>glR', "<cmd>lua require('gitlab').revoke()<CR>", desc = 'GitLab Revoke Approval' },
-      { '<leader>glc', "<cmd>lua require('gitlab').create_comment()<CR>", desc = 'GitLab Create Comment' },
-      { '<leader>glp', "<cmd>lua require('gitlab').pipeline()<CR>", desc = 'GitLab Pipeline' },
-      { '<leader>gld', "<cmd>lua require('gitlab').toggle_discussions()<CR>", desc = 'GitLab Discussions' },
-    },
-  },
-
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    version = '*',
-    lazy = false,
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons',
-      'MunifTanjim/nui.nvim',
-    },
-    keys = {
-      { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
-    },
-    opts = {
-      filesystem = {
-        group_empty_dirs = true,
-        use_libuv_file_watcher = true,
-        window = {
-          mappings = {
-            ['\\'] = 'close_window',
-          },
-        },
-        hijack_netrw_behavior = 'open_default',
-      },
-    },
-  },
-
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
