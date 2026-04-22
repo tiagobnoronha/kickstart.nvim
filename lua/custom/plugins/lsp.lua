@@ -8,6 +8,10 @@ local extra_servers = {
     settings = {
       yaml = {
         keyOrdering = false,
+        schemaStore = {
+          enable = true,
+          url = 'https://www.schemastore.org/api/json/catalog.json',
+        },
         schemas = {
           ['https://json.schemastore.org/spring-boot-application.json'] = {
             'application.yml',
