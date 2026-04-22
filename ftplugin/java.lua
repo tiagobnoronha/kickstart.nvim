@@ -9,6 +9,11 @@ if vim.b.jdtls_attached then
 end
 vim.b.jdtls_attached = true
 
+vim.bo.expandtab   = true
+vim.bo.tabstop     = 4
+vim.bo.shiftwidth  = 4
+vim.bo.softtabstop = 4
+
 local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
 local lombok_path = jdtls_path .. "/lombok.jar"
 
