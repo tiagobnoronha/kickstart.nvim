@@ -111,7 +111,7 @@ vim.o.mouse = 'a'
 vim.o.showmode = false
 
 vim.o.tabstop = 2
-
+vim.o.wrap = false
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
