@@ -935,6 +935,7 @@ require('lazy').setup({
         'xml',
         'json',
         'yaml',
+        'sql',
       }
       require('nvim-treesitter').install(parsers)
 
