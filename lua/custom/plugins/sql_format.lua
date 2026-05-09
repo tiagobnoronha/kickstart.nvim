@@ -1,4 +1,4 @@
-vim.keymap.set('v', '<leader>sf', function()
+vim.keymap.set('v', '<leader>fs', function()
   local start_line = vim.fn.line "'<"
   local end_line = vim.fn.line "'>"
   local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
@@ -30,7 +30,7 @@ vim.keymap.set('v', '<leader>sf', function()
   end
 
   vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, indented)
-end, { desc = '[S]QL [f]ormat selection' })
+end, { desc = '[F]ormat [S]QL selection' })
 
 ---@module 'lazy'
 ---@type LazySpec
