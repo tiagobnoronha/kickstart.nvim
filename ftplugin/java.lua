@@ -111,12 +111,14 @@ local config = {
 local capabilities = require("blink.cmp").get_lsp_capabilities()
 config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabilities or {})
 
+-- Wire up debug adapter only after JDTLS is fully initialized
+config.on_attach = function()
+  jdtls.setup_dap { hotcodereplace = 'auto' }
+  require('jdtls.dap').setup_dap_main_class_configs()
+end
+
 -- Start or attach to the language server
 jdtls.start_or_attach(config)
-
--- Wire up debug adapter (requires java-debug-adapter bundle)
-jdtls.setup_dap { hotcodereplace = 'auto' }
-require('jdtls.dap').setup_dap_main_class_configs()
 
 -- Java-specific keymaps (only in Java buffers)
 local buf = vim.api.nvim_get_current_buf()
