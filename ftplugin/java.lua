@@ -114,6 +114,10 @@ config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabili
 -- Start or attach to the language server
 jdtls.start_or_attach(config)
 
+-- Wire up debug adapter (requires java-debug-adapter bundle)
+jdtls.setup_dap { hotcodereplace = 'auto' }
+require('jdtls.dap').setup_dap_main_class_configs()
+
 -- Java-specific keymaps (only in Java buffers)
 local buf = vim.api.nvim_get_current_buf()
 local map = function(keys, func, desc)
@@ -134,3 +138,21 @@ map('<leader>jT', jdtls.test_class, '[T]est Class')
 map('<leader>jb', '<cmd>!mvn compile<CR>', '[B]uild (Maven)')
 map('<leader>jB', '<cmd>!./mvnw compile<CR>', '[B]uild (Maven Wrapper)')
 map('<leader>jg', '<cmd>!./gradlew build<CR>', '[B]uild (Gradle)')
+
+-- Debug (requires nvim-dap + nvim-dap-ui)
+local dap_ok, dap = pcall(require, 'dap')
+local dapui_ok, dapui = pcall(require, 'dapui')
+if dap_ok then
+  map('<leader>jdc', dap.continue,          '[D]ebug [C]ontinue/Start')
+  map('<leader>jdb', dap.toggle_breakpoint, '[D]ebug toggle [B]reakpoint')
+  map('<leader>jdB', function()
+    dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+  end, '[D]ebug conditional [B]reakpoint')
+  map('<leader>jdo', dap.step_over,  '[D]ebug step [O]ver')
+  map('<leader>jdi', dap.step_into,  '[D]ebug step [I]nto')
+  map('<leader>jdO', dap.step_out,   '[D]ebug step [O]ut')
+  map('<leader>jdx', dap.terminate,  '[D]ebug terminate')
+end
+if dapui_ok then
+  map('<leader>jdu', dapui.toggle, '[D]ebug [U]I toggle')
+end
