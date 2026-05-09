@@ -2,7 +2,16 @@
 ---@type LazySpec
 return {
   { 'tpope/vim-fugitive' },
-  { 'sindrets/diffview.nvim' },
+  {
+    'sindrets/diffview.nvim',
+    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewFileHistory' },
+    keys = {
+      { '<leader>gdo', '<cmd>DiffviewOpen<cr>',             desc = '[G]it [D]iff [O]pen' },
+      { '<leader>gdh', '<cmd>DiffviewFileHistory %<cr>',    desc = '[G]it [D]iff file [H]istory' },
+      { '<leader>gdH', '<cmd>DiffviewFileHistory<cr>',      desc = '[G]it [D]iff repo [H]istory' },
+      { '<leader>gdc', '<cmd>DiffviewClose<cr>',            desc = '[G]it [D]iff [C]lose' },
+    },
+  },
 
   {
     'crnvl96/lazydocker.nvim',
