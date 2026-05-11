@@ -131,6 +131,14 @@ vim.schedule(function()
       },
       cache_enabled = 0,
     }
+  elseif vim.fn.has 'linux' == 1 and vim.env.DISPLAY == nil and vim.env.WAYLAND_DISPLAY == nil then
+    -- Headless Linux (SSH without display): use OSC52 terminal escape sequences
+    local osc52 = require 'vim.ui.clipboard.osc52'
+    vim.g.clipboard = {
+      name = 'OSC52',
+      copy = { ['+'] = osc52.copy '+', ['*'] = osc52.copy '*' },
+      paste = { ['+'] = osc52.paste '+', ['*'] = osc52.paste '*' },
+    }
   end
   vim.o.clipboard = 'unnamedplus'
 end)
