@@ -71,8 +71,8 @@ local config = {
       },
       sources = {
         organizeImports = {
-          starThreshold = 9999,
-          staticStarThreshold = 9999,
+          starThreshold = 5,
+          staticStarThreshold = 5,
         },
       },
       codeGeneration = {
