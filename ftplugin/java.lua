@@ -115,6 +115,28 @@ config.capabilities = vim.tbl_deep_extend("force", capabilities, config.capabili
 config.on_attach = function()
   jdtls.setup_dap { hotcodereplace = 'auto' }
   require('jdtls.dap').setup_dap_main_class_configs()
+
+  local dap = require 'dap'
+  if not dap.configurations.java then
+    dap.configurations.java = {}
+  end
+  -- Remote attach config for Docker containers (JDWP on port 5005)
+  local already_added = false
+  for _, c in ipairs(dap.configurations.java) do
+    if c.name == 'Attach to Docker (5005)' then
+      already_added = true
+      break
+    end
+  end
+  if not already_added then
+    table.insert(dap.configurations.java, {
+      type = 'java',
+      request = 'attach',
+      name = 'Attach to Docker (5005)',
+      hostName = '127.0.0.1',
+      port = 5005,
+    })
+  end
 end
 
 -- Start or attach to the language server
