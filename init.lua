@@ -99,7 +99,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -110,19 +110,41 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
 
   -- Don't show the mode, since it's already in the status line
   vim.o.showmode = false
+  vim.o.tabstop = 2
+  vim.o.wrap = false
 
   -- Sync clipboard between OS and Neovim.
   --  Schedule the setting after `UiEnter` because it can increase startup-time.
   --  Remove this option if you want your OS clipboard to remain independent.
   --  See `:help 'clipboard'`
-  vim.schedule(function() vim.o.clipboard = 'unnamedplus' end)
+  vim.schedule(function()
+    if vim.fn.has 'wsl' == 1 then
+      vim.g.clipboard = {
+        name = 'WslClipboard',
+        copy = { ['+'] = 'clip.exe', ['*'] = 'clip.exe' },
+        paste = {
+          ['+'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r`n","`n").replace("`r","`n"))',
+          ['*'] = 'powershell.exe -NoLogo -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r`n","`n").replace("`r","`n"))',
+        },
+        cache_enabled = 0,
+      }
+    elseif vim.fn.has 'linux' == 1 and vim.env.DISPLAY == nil and vim.env.WAYLAND_DISPLAY == nil then
+      local osc52 = require 'vim.ui.clipboard.osc52'
+      vim.g.clipboard = {
+        name = 'OSC52',
+        copy = { ['+'] = osc52.copy '+', ['*'] = osc52.copy '*' },
+        paste = { ['+'] = osc52.paste '+', ['*'] = osc52.paste '*' },
+      }
+    end
+    vim.o.clipboard = 'unnamedplus'
+  end)
 
   -- Enable break indent
   vim.o.breakindent = true
@@ -204,6 +226,7 @@ do
   }
 
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+  vim.keymap.set('n', '<leader>v', '<C-v>', { desc = 'Visual block mode' })
 
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -351,28 +374,26 @@ do
   --
   -- See `:help gitsigns` to understand what each configuration key does.
   -- Adds git related signs to the gutter, as well as utilities for managing changes
+  -- gitsigns: installed here, configured in lua/custom/plugins/gitsigns.lua
   vim.pack.add { gh 'lewis6991/gitsigns.nvim' }
-  require('gitsigns').setup {
-    signs = {
-      add = { text = '+' }, ---@diagnostic disable-line: missing-fields
-      change = { text = '~' }, ---@diagnostic disable-line: missing-fields
-      delete = { text = '_' }, ---@diagnostic disable-line: missing-fields
-      topdelete = { text = '‾' }, ---@diagnostic disable-line: missing-fields
-      changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
-    },
-  }
 
   -- Useful plugin to show you pending keybinds.
   vim.pack.add { gh 'folke/which-key.nvim' }
   require('which-key').setup {
-    -- Delay between pressing a key and opening which-key (milliseconds)
     delay = 0,
     icons = { mappings = vim.g.have_nerd_font },
-    -- Document existing key chains
     spec = {
       { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
       { '<leader>t', group = '[T]oggle' },
-      { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
+      { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+      { '<leader>g', group = '[G]it' },
+      { '<leader>S', group = '[S]ession' },
+      { '<leader>H', group = '[H]arpoon' },
+      { '<leader>j', group = '[J]ava' },
+      { '<leader>jn', group = 'Java [N]ew file' },
+      { '<leader>jd', group = 'Java [D]ebug' },
+      { '<leader>gl', group = '[G]it[L]ab' },
+      { '<leader>a', group = '[A]ngular' },
       { 'gr', group = 'LSP Actions', mode = { 'n' } },
     },
   }
@@ -699,6 +720,40 @@ do
 
     stylua = {}, -- Used to format Lua code
 
+    ts_ls = {},
+    cssls = {},
+    dockerls = {},
+    docker_compose_language_service = {},
+    jsonls = {},
+    yamlls = {
+      settings = {
+        yaml = {
+          keyOrdering = false,
+          schemaStore = { enable = true, url = 'https://www.schemastore.org/api/json/catalog.json' },
+        },
+      },
+    },
+    emmet_ls = {
+      filetypes = { 'html', 'css', 'scss', 'php', 'typescriptreact', 'javascriptreact' },
+    },
+    intelephense = {
+      settings = {
+        intelephense = {
+          stubs = {
+            'apache', 'bcmath', 'bz2', 'calendar', 'com_dotnet', 'Core', 'ctype', 'curl', 'date',
+            'dba', 'dom', 'enchant', 'exif', 'FFI', 'fileinfo', 'filter', 'fpm', 'ftp', 'gd',
+            'gettext', 'gmp', 'hash', 'iconv', 'imap', 'intl', 'json', 'ldap', 'libxml', 'mbstring',
+            'meta', 'mysqli', 'oci8', 'odbc', 'openssl', 'pcntl', 'pcre', 'PDO', 'pdo_ibm',
+            'pdo_mysql', 'pdo_pgsql', 'pdo_sqlite', 'pgsql', 'Phar', 'posix', 'pspell', 'readline',
+            'Reflection', 'session', 'shmop', 'SimpleXML', 'snmp', 'soap', 'sockets', 'sodium',
+            'SPL', 'sqlite3', 'standard', 'superglobals', 'sysvmsg', 'sysvsem', 'sysvshm', 'tidy',
+            'tokenizer', 'xml', 'xmlreader', 'xmlrpc', 'xmlwriter', 'xsl', 'Zend OPcache', 'zip',
+            'zlib', 'wordpress', 'phpunit',
+          },
+        },
+      },
+    },
+
     -- Special Lua Config, as recommended by neovim help docs
     lua_ls = {
       on_init = function(client)
@@ -753,7 +808,16 @@ do
   -- You can press `g?` for help in this menu.
   local ensure_installed = vim.tbl_keys(servers or {})
   vim.list_extend(ensure_installed, {
-    -- You can add other tools here that you want Mason to install
+    'angular-language-server',
+    'html-lsp',
+    'prettierd',
+    'prettier',
+    'jdtls',
+    'vscode-spring-boot-tools',
+    'java-test',
+    'java-debug-adapter',
+    'phpcbf',
+    'hadolint',
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -788,14 +852,17 @@ do
     default_format_opts = {
       lsp_format = 'fallback', -- Use external formatters if configured below, otherwise use LSP formatting. Set to `false` to disable LSP formatting entirely.
     },
-    -- You can also specify external formatters in here.
     formatters_by_ft = {
-      -- rust = { 'rustfmt' },
-      -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      typescript  = { 'prettierd', 'prettier', stop_after_first = true },
+      javascript  = { 'prettierd', 'prettier', stop_after_first = true },
+      html        = { 'prettierd', 'prettier', stop_after_first = true },
+      css         = { 'prettierd', 'prettier', stop_after_first = true },
+      scss        = { 'prettierd', 'prettier', stop_after_first = true },
+      angular     = { 'prettierd', 'prettier', stop_after_first = true },
+      json        = { 'prettierd', 'prettier', stop_after_first = true },
+      jsonc       = { 'prettierd', 'prettier', stop_after_first = true },
+      yaml        = { 'prettierd', 'prettier', stop_after_first = true },
+      php         = { 'phpcbf' },
     },
   }
 
@@ -814,12 +881,8 @@ do
   vim.pack.add { { src = gh 'L3MON4D3/LuaSnip', version = vim.version.range '2.*' } }
   require('luasnip').setup {}
 
-  -- `friendly-snippets` contains a variety of premade snippets.
-  --    See the README about individual language/framework/plugin snippets:
-  --    https://github.com/rafamadriz/friendly-snippets
-  --
-  -- vim.pack.add { gh 'rafamadriz/friendly-snippets' }
-  -- require('luasnip.loaders.from_vscode').lazy_load()
+  vim.pack.add { gh 'rafamadriz/friendly-snippets' }
+  require('luasnip.loaders.from_vscode').lazy_load()
 
   -- [[ Autocomplete Engine ]]
   vim.pack.add { { src = gh 'saghen/blink.cmp', version = vim.version.range '1.*' } }
@@ -897,8 +960,11 @@ do
   -- NOTE: You can also specify a branch or a specific commit
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
-  -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers = {
+    'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc',
+    'typescript', 'javascript', 'css', 'scss', 'angular',
+    'java', 'php', 'phpdoc', 'dockerfile', 'xml', 'json', 'yaml', 'sql',
+  }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
@@ -967,10 +1033,24 @@ do
   -- require 'kickstart.plugins.neo-tree'
   -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
+  -- Shared dependencies for custom plugins
+  vim.pack.add {
+    gh 'MunifTanjim/nui.nvim',
+    gh 'nvim-neotest/nvim-nio',
+    gh 'stevearc/dressing.nvim',
+  }
+
+  -- Build hook for gitlab.nvim Go binary
+  vim.api.nvim_create_autocmd('PackChanged', {
+    callback = function(ev)
+      if ev.data.spec.name == 'gitlab.nvim' and (ev.data.kind == 'install' or ev.data.kind == 'update') then
+        require('gitlab.server').build(true)
+      end
+    end,
+  })
+
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`

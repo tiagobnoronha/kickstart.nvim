@@ -1,0 +1,2 @@
+-- Extra LSP servers are configured in init.lua (servers table + ensure_installed).
+-- Angular LSP and HTML LSP are configured in angular.lua.
