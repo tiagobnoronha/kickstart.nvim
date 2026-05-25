@@ -31,7 +31,3 @@ vim.keymap.set('v', '<leader>fs', function()
 
   vim.api.nvim_buf_set_lines(0, start_line - 1, end_line, false, indented)
 end, { desc = '[F]ormat [S]QL selection' })
-
----@module 'lazy'
----@type LazySpec
-return {}

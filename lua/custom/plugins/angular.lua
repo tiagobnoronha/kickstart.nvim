@@ -40,19 +40,17 @@ local function angular_cycle()
   vim.notify('Not an Angular component file', vim.log.levels.WARN)
 end
 
-vim.keymap.set('n', '<leader>aa', angular_cycle,                                   { desc = '[A]ngular cycle files' })
-vim.keymap.set('n', '<leader>ac', function() angular_goto '.component.ts' end,    { desc = '[A]ngular [C]omponent TS' })
-vim.keymap.set('n', '<leader>at', function() angular_goto '.component.html' end,  { desc = '[A]ngular [T]emplate HTML' })
-vim.keymap.set('n', '<leader>as', function() angular_goto '.component.scss' end,  { desc = '[A]ngular [S]tylesheet SCSS' })
+vim.keymap.set('n', '<leader>aa', angular_cycle,                                     { desc = '[A]ngular cycle files' })
+vim.keymap.set('n', '<leader>ac', function() angular_goto '.component.ts' end,      { desc = '[A]ngular [C]omponent TS' })
+vim.keymap.set('n', '<leader>at', function() angular_goto '.component.html' end,    { desc = '[A]ngular [T]emplate HTML' })
+vim.keymap.set('n', '<leader>as', function() angular_goto '.component.scss' end,    { desc = '[A]ngular [S]tylesheet SCSS' })
 vim.keymap.set('n', '<leader>aS', function() angular_goto '.component.spec.ts' end, { desc = '[A]ngular [S]pec TS' })
 
--- angularls: lspconfig built-in cmd handles probe locations; only override filetypes
 vim.lsp.config('angularls', {
   filetypes = { 'typescript', 'html', 'typescriptreact', 'htmlangular' },
 })
 vim.lsp.enable 'angularls'
 
--- html LSP: stop on Angular template files (angularls handles them)
 vim.lsp.config('html', {
   on_attach = function(client, bufnr)
     local ft = vim.bo[bufnr].filetype
@@ -62,17 +60,3 @@ vim.lsp.config('html', {
   end,
 })
 vim.lsp.enable 'html'
-
----@module 'lazy'
----@type LazySpec
-return {
-  {
-    'folke/which-key.nvim',
-    optional = true,
-    opts = {
-      spec = {
-        { '<leader>a', group = '[A]ngular' },
-      },
-    },
-  },
-}

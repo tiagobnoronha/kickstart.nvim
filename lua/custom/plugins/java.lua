@@ -1,3 +1,7 @@
+local function gh(repo) return 'https://github.com/' .. repo end
+
+vim.pack.add { gh 'mfussenegger/nvim-jdtls' }
+
 local function java_infer_package(dir)
   for _, pat in ipairs({ 'src/main/java/', 'src/test/java/' }) do
     local _, finish = dir:find(pat, 1, true)
@@ -74,18 +78,3 @@ end
 vim.keymap.set('n', '<leader>jnc', function() java_create_file 'class'     end, { desc = 'Java: [N]ew [C]lass' })
 vim.keymap.set('n', '<leader>jni', function() java_create_file 'interface' end, { desc = 'Java: [N]ew [I]nterface' })
 vim.keymap.set('n', '<leader>jnr', function() java_create_file 'record'    end, { desc = 'Java: [N]ew [R]ecord' })
-
----@module 'lazy'
----@type LazySpec
-return {
-  { 'mfussenegger/nvim-jdtls' },
-  {
-    'folke/which-key.nvim',
-    optional = true,
-    opts = {
-      spec = {
-        { '<leader>jn', group = 'Java [N]ew file' },
-      },
-    },
-  },
-}
