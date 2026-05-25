@@ -27,6 +27,9 @@ require('dotenv').setup()
 local global_env = vim.fn.stdpath 'config' .. '/.env'
 if vim.fn.filereadable(global_env) == 1 then vim.cmd('Dotenv ' .. global_env) end
 
+-- diffview must be initialized before gitlab (gitlab.nvim loads diffview internals at setup time)
+require('diffview').setup()
+
 -- gitlab
 require('gitlab').setup()
 vim.keymap.set('n', '<leader>gls', function() require('gitlab').summary() end,              { desc = 'GitLab Summary' })
