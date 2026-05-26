@@ -858,7 +858,7 @@ do
       html        = { 'prettierd', 'prettier', stop_after_first = true },
       css         = { 'prettierd', 'prettier', stop_after_first = true },
       scss        = { 'prettierd', 'prettier', stop_after_first = true },
-      angular     = { 'prettierd', 'prettier', stop_after_first = true },
+      htmlangular = { 'prettierd', 'prettier', stop_after_first = true },
       json        = { 'prettierd', 'prettier', stop_after_first = true },
       jsonc       = { 'prettierd', 'prettier', stop_after_first = true },
       yaml        = { 'prettierd', 'prettier', stop_after_first = true },
