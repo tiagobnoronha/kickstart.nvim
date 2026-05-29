@@ -731,7 +731,7 @@ do
           keyOrdering = false,
           schemaStore = { enable = true, url = 'https://www.schemastore.org/api/json/catalog.json' },
           schemas = {
-            ['https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/spring-boot-application-yaml.json'] = {
+            ['https://json.schemastore.org/spring-boot-application-yaml.json'] = {
               '**/src/main/resources/application*.yml',
               '**/src/main/resources/application*.yaml',
               '**/src/test/resources/application*.yml',
