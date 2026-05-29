@@ -729,13 +729,25 @@ do
       settings = {
         yaml = {
           keyOrdering = false,
-          schemaStore = { enable = true, url = 'https://www.schemastore.org/api/json/catalog.json' },
+          schemaStore = { enable = false },
           schemas = {
             ['https://json.schemastore.org/spring-boot-application-yaml.json'] = {
               '**/src/main/resources/application*.yml',
               '**/src/main/resources/application*.yaml',
               '**/src/test/resources/application*.yml',
               '**/src/test/resources/application*.yaml',
+            },
+            ['https://json.schemastore.org/docker-compose.json'] = {
+              '**/docker-compose*.yml',
+              '**/docker-compose*.yaml',
+            },
+            ['https://json.schemastore.org/github-workflow.json'] = {
+              '.github/workflows/*.yml',
+              '.github/workflows/*.yaml',
+            },
+            ['https://json.schemastore.org/github-action.json'] = {
+              '.github/actions/*/action.yml',
+              '.github/actions/*/action.yaml',
             },
           },
         },
