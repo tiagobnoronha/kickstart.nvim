@@ -729,13 +729,16 @@ do
       settings = {
         yaml = {
           keyOrdering = false,
-          schemaStore = { enable = false },
+          schemaStore = { enable = true, url = 'https://www.schemastore.org/api/json/catalog.json' },
           schemas = {
-            ['https://json.schemastore.org/spring-boot-application-yaml.json'] = {
-              '**/src/main/resources/application*.yml',
-              '**/src/main/resources/application*.yaml',
-              '**/src/test/resources/application*.yml',
-              '**/src/test/resources/application*.yaml',
+            -- Spring Boot: no dedicated YAML schema exists on SchemaStore.
+            -- Map to JSON Schema meta-schema (permissive, allows any valid YAML)
+            -- to prevent schemaStore from applying wrong schemas (e.g. Kubernetes).
+            ['https://json-schema.org/draft-07/schema'] = {
+              'application.yml',
+              'application.yaml',
+              'application-*.yml',
+              'application-*.yaml',
             },
             ['https://json.schemastore.org/docker-compose.json'] = {
               '**/docker-compose*.yml',
