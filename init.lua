@@ -732,25 +732,13 @@ do
           schemaStore = { enable = true, url = 'https://www.schemastore.org/api/json/catalog.json' },
           schemas = {
             -- Spring Boot: no dedicated YAML schema exists on SchemaStore.
-            -- Map to JSON Schema meta-schema (permissive, allows any valid YAML)
-            -- to prevent schemaStore from applying wrong schemas (e.g. Kubernetes).
+            -- Permissive meta-schema suppresses incorrect auto-detected schemas
+            -- (e.g. Kubernetes) while spring-boot-ls handles real validation.
             ['https://json-schema.org/draft-07/schema'] = {
               'application.yml',
               'application.yaml',
               'application-*.yml',
               'application-*.yaml',
-            },
-            ['https://json.schemastore.org/docker-compose.json'] = {
-              '**/docker-compose*.yml',
-              '**/docker-compose*.yaml',
-            },
-            ['https://json.schemastore.org/github-workflow.json'] = {
-              '.github/workflows/*.yml',
-              '.github/workflows/*.yaml',
-            },
-            ['https://json.schemastore.org/github-action.json'] = {
-              '.github/actions/*/action.yml',
-              '.github/actions/*/action.yaml',
             },
           },
         },
