@@ -84,6 +84,7 @@ local config = {
         },
         useBlocks = true,
       },
+      autobuild = { enabled = true },
     }
   },
   init_options = {
