@@ -1,3 +1,5 @@
+; extends
+
 ; HTML/CSS/SQL injection via comment annotation
 ; Supports: //lang=html  # lang=html  # html  // html
 ; Place the comment directly above a `$var = "...";` assignment or a
