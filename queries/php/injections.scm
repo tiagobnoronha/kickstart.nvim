@@ -11,7 +11,7 @@
 ((comment) @_comment
  .
  (expression_statement
-   (assignment_expression
+   (_
      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
@@ -30,7 +30,7 @@
 ((comment) @_comment
  .
  (expression_statement
-   (assignment_expression
+   (_
      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
@@ -49,7 +49,7 @@
 ((comment) @_comment
  .
  (expression_statement
-   (assignment_expression
+   (_
      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
@@ -68,7 +68,7 @@
 ((comment) @_comment
  .
  (expression_statement
-   (assignment_expression
+   (_
      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
@@ -87,7 +87,7 @@
 ((comment) @_comment
  .
  (expression_statement
-   (assignment_expression
+   (_
      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
@@ -106,7 +106,7 @@
 ((comment) @_comment
  .
  (expression_statement
-   (assignment_expression
+   (_
      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
