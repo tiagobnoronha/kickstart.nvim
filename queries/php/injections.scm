@@ -10,9 +10,9 @@
 
 ((comment) @_comment
  .
- (expression_statement
-   (_
-     [(string (string_content) @injection.content)
+ [(expression_statement
+    (_
+      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
         body: (match_block
@@ -23,15 +23,27 @@
                arguments: (arguments
                  (argument [(string (string_content) @injection.content)
                             (encapsed_string (string_content) @injection.content)])))])))]))
+  (return_statement
+    [(string (string_content) @injection.content)
+      (encapsed_string (string_content) @injection.content)
+      (match_expression
+        body: (match_block
+          (_ return_expression:
+            [(string (string_content) @injection.content)
+             (encapsed_string (string_content) @injection.content)
+             (function_call_expression
+               arguments: (arguments
+                 (argument [(string (string_content) @injection.content)
+                            (encapsed_string (string_content) @injection.content)])))])))])]
  (#lua-match? @_comment "lang=html")
  (#set! injection.language "html")
  (#set! injection.combined))
 
 ((comment) @_comment
  .
- (expression_statement
-   (_
-     [(string (string_content) @injection.content)
+ [(expression_statement
+    (_
+      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
         body: (match_block
@@ -42,15 +54,27 @@
                arguments: (arguments
                  (argument [(string (string_content) @injection.content)
                             (encapsed_string (string_content) @injection.content)])))])))]))
+  (return_statement
+    [(string (string_content) @injection.content)
+      (encapsed_string (string_content) @injection.content)
+      (match_expression
+        body: (match_block
+          (_ return_expression:
+            [(string (string_content) @injection.content)
+             (encapsed_string (string_content) @injection.content)
+             (function_call_expression
+               arguments: (arguments
+                 (argument [(string (string_content) @injection.content)
+                            (encapsed_string (string_content) @injection.content)])))])))])]
  (#lua-match? @_comment "^[#/]+%s*html%s*$")
  (#set! injection.language "html")
  (#set! injection.combined))
 
 ((comment) @_comment
  .
- (expression_statement
-   (_
-     [(string (string_content) @injection.content)
+ [(expression_statement
+    (_
+      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
         body: (match_block
@@ -61,15 +85,27 @@
                arguments: (arguments
                  (argument [(string (string_content) @injection.content)
                             (encapsed_string (string_content) @injection.content)])))])))]))
+  (return_statement
+    [(string (string_content) @injection.content)
+      (encapsed_string (string_content) @injection.content)
+      (match_expression
+        body: (match_block
+          (_ return_expression:
+            [(string (string_content) @injection.content)
+             (encapsed_string (string_content) @injection.content)
+             (function_call_expression
+               arguments: (arguments
+                 (argument [(string (string_content) @injection.content)
+                            (encapsed_string (string_content) @injection.content)])))])))])]
  (#lua-match? @_comment "lang=css")
  (#set! injection.language "css")
  (#set! injection.combined))
 
 ((comment) @_comment
  .
- (expression_statement
-   (_
-     [(string (string_content) @injection.content)
+ [(expression_statement
+    (_
+      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
         body: (match_block
@@ -80,15 +116,27 @@
                arguments: (arguments
                  (argument [(string (string_content) @injection.content)
                             (encapsed_string (string_content) @injection.content)])))])))]))
+  (return_statement
+    [(string (string_content) @injection.content)
+      (encapsed_string (string_content) @injection.content)
+      (match_expression
+        body: (match_block
+          (_ return_expression:
+            [(string (string_content) @injection.content)
+             (encapsed_string (string_content) @injection.content)
+             (function_call_expression
+               arguments: (arguments
+                 (argument [(string (string_content) @injection.content)
+                            (encapsed_string (string_content) @injection.content)])))])))])]
  (#lua-match? @_comment "^[#/]+%s*css%s*$")
  (#set! injection.language "css")
  (#set! injection.combined))
 
 ((comment) @_comment
  .
- (expression_statement
-   (_
-     [(string (string_content) @injection.content)
+ [(expression_statement
+    (_
+      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
         body: (match_block
@@ -99,15 +147,27 @@
                arguments: (arguments
                  (argument [(string (string_content) @injection.content)
                             (encapsed_string (string_content) @injection.content)])))])))]))
+  (return_statement
+    [(string (string_content) @injection.content)
+      (encapsed_string (string_content) @injection.content)
+      (match_expression
+        body: (match_block
+          (_ return_expression:
+            [(string (string_content) @injection.content)
+             (encapsed_string (string_content) @injection.content)
+             (function_call_expression
+               arguments: (arguments
+                 (argument [(string (string_content) @injection.content)
+                            (encapsed_string (string_content) @injection.content)])))])))])]
  (#lua-match? @_comment "lang=sql")
  (#set! injection.language "sql")
  (#set! injection.combined))
 
 ((comment) @_comment
  .
- (expression_statement
-   (_
-     [(string (string_content) @injection.content)
+ [(expression_statement
+    (_
+      [(string (string_content) @injection.content)
       (encapsed_string (string_content) @injection.content)
       (match_expression
         body: (match_block
@@ -118,6 +178,18 @@
                arguments: (arguments
                  (argument [(string (string_content) @injection.content)
                             (encapsed_string (string_content) @injection.content)])))])))]))
+  (return_statement
+    [(string (string_content) @injection.content)
+      (encapsed_string (string_content) @injection.content)
+      (match_expression
+        body: (match_block
+          (_ return_expression:
+            [(string (string_content) @injection.content)
+             (encapsed_string (string_content) @injection.content)
+             (function_call_expression
+               arguments: (arguments
+                 (argument [(string (string_content) @injection.content)
+                            (encapsed_string (string_content) @injection.content)])))])))])]
  (#lua-match? @_comment "^[#/]+%s*sql%s*$")
  (#set! injection.language "sql")
  (#set! injection.combined))
