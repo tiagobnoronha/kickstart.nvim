@@ -2,7 +2,6 @@ local function gh(repo) return 'https://github.com/' .. repo end
 
 vim.pack.add { gh 'lervag/vimtex' }
 
-vim.g.vimtex_version_check = 0  -- Neovim 0.12.2 < 0.12.4 required by vimtex; remove after upgrade
 vim.g.vimtex_view_method = 'skim'
 vim.g.vimtex_compiler_method = 'latexmk'
 vim.g.vimtex_mappings_enabled = 1
