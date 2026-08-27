@@ -833,7 +833,7 @@ do
             'phpunit',
           },
           environment = {
-            includePaths = { '.stubs', '/home/tbn87/development/stubs/php/' },
+            includePaths = { '.stubs', '/home/tbn87/development/stubs/php/', 'vendor/' },
           },
         },
       },
