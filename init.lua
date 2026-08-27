@@ -394,6 +394,7 @@ do
       { '<leader>jd', group = 'Java [D]ebug' },
       { '<leader>gl', group = '[G]it[L]ab' },
       { '<leader>a', group = '[A]ngular' },
+      { '<leader>l', group = '[L]aTeX' },
       { 'gr', group = 'LSP Actions', mode = { 'n' } },
     },
   }
@@ -833,6 +834,7 @@ do
     },
 
     -- Special Lua Config, as recommended by neovim help docs
+    texlab = {},
     lua_ls = {
       on_init = function(client)
         client.server_capabilities.documentFormattingProvider = false -- Disable formatting (formatting is done by stylua)
@@ -896,6 +898,8 @@ do
     'java-debug-adapter',
     'phpcbf',
     'hadolint',
+    'texlab',
+    'latexindent',
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -941,6 +945,7 @@ do
       jsonc = { 'prettierd', 'prettier', stop_after_first = true },
       yaml = { 'prettierd', 'prettier', stop_after_first = true },
       php = { 'phpcbf' },
+      tex = { 'latexindent' },
     },
   }
 
@@ -1063,6 +1068,7 @@ do
     'json',
     'yaml',
     'sql',
+    'latex',
   }
   require('nvim-treesitter').install(parsers)
 
