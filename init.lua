@@ -394,6 +394,7 @@ do
       { '<leader>gl', group = '[G]it[L]ab' },
       { '<leader>a', group = '[A]ngular' },
       { '<leader>l', group = '[L]aTeX' },
+      { '<leader>c', group = '[C]laude' },
       { 'gr', group = 'LSP Actions', mode = { 'n' } },
     },
   }
