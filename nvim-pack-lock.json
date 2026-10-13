@@ -128,6 +128,10 @@
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
+    "sshfs.nvim": {
+      "rev": "07fc74206d3bf7671e8b13aef2d0d871e0516746",
+      "src": "https://github.com/uhs-robert/sshfs.nvim"
+    },
     "telescope-fzf-native.nvim": {
       "rev": "b25b749b9db64d375d782094e2b9dce53ad53a40",
       "src": "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
